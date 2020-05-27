@@ -22,7 +22,14 @@ namespace QuizManager.Controllers
         // GET: Questions
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Question.ToListAsync());
+            var questions = new List<Question>();
+            using (_context)
+            {
+                questions = _context.Question
+                    .Include(question => question.AnswerOptions)
+                    .ToList();
+            }
+            return View(questions);
         }
 
         // GET: Questions/Details/5
