@@ -40,14 +40,17 @@ namespace QuizManager.Controllers
                 return NotFound();
             }
 
-            var quiz = await _context.Quiz
-                .FirstOrDefaultAsync(m => m.QuizId == id);
-            if (quiz == null)
-            {
-                return NotFound();
-            }
+            var quizzes = await _context.Quiz
+                .Where(quiz => quiz.QuizId == id)
+                .Include((quiz => quiz.Questions))
+                    .ThenInclude(question => question.AnswerOptions)
+                .ToListAsync();
 
-            return View(quiz);
+            var selectedQuiz = quizzes.FirstOrDefault();
+
+            selectedQuiz.Questions = selectedQuiz.Questions.OrderBy(question => question.Position).ToList();
+
+            return View(selectedQuiz);
         }
 
         // GET: Quizzes/Create
