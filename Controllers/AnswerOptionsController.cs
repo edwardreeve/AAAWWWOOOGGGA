@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -20,7 +21,7 @@ namespace QuizManager.Controllers
         }
 
         // GET: AnswerOptions
-        public async Task<IActionResult> Index()
+        private async Task<IActionResult> Index()
         {
             return View(await _context.AnswerOption.ToListAsync());
         }
@@ -44,7 +45,7 @@ namespace QuizManager.Controllers
         }
 
         // GET: AnswerOptions/Create
-        public IActionResult Create()
+        private IActionResult Create()
         {
             return View();
         }
@@ -54,7 +55,7 @@ namespace QuizManager.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AnswerOptionId,QuestionId,AnswerText,Correct")] AnswerOption answerOption)
+        private async Task<IActionResult> Create([Bind("AnswerOptionId,QuestionId,AnswerText,Correct")] AnswerOption answerOption)
         {
             if (ModelState.IsValid)
             {
@@ -66,6 +67,7 @@ namespace QuizManager.Controllers
         }
 
         // GET: AnswerOptions/Edit/5
+        [Authorize(Roles = "Edit")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -84,6 +86,7 @@ namespace QuizManager.Controllers
         // POST: AnswerOptions/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Edit")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("AnswerOptionId,QuestionId,AnswerText,Correct")] AnswerOption answerOption)
@@ -111,12 +114,12 @@ namespace QuizManager.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Edit", "Questions", new { id = answerOption.QuestionId});
             }
             return View(answerOption);
         }
 
-        // GET: AnswerOptions/Delete/5
+        [Authorize(Roles = "Edit")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -135,14 +138,20 @@ namespace QuizManager.Controllers
         }
 
         // POST: AnswerOptions/Delete/5
+        [Authorize(Roles = "Edit")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var answerOption = await _context.AnswerOption.FindAsync(id);
-            _context.AnswerOption.Remove(answerOption);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            if (ModelState.IsValid)
+            {
+                _context.AnswerOption.Remove(answerOption);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Edit", "Questions", new { id = answerOption.QuestionId });
+            }
+            return View(answerOption);
         }
 
         private bool AnswerOptionExists(int id)

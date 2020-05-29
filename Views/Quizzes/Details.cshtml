@@ -6,10 +6,16 @@
 }
 
 <h1> @Html.DisplayFor(model => model.Name)</h1>
+@if (User.IsInRole("Edit"))
+{
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.QuizId">rename</a>
+    </div>
+}
 
 <div>
-    <h4>Questions</h4>
     <hr />
+    <h4>Questions</h4>
     <dl class="row">
         <div class="container " id="quizDetailsQuestion">
             <ol>
@@ -17,23 +23,65 @@
                     foreach (var question in @Model.Questions)
                     {
                         <li>
-                            <div class="card">
-                                <div class="card-header" id="heading-@counter">
-                                    <h2 class="mb-0">
-                                        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapse-@counter" aria-expanded="true" aria-controls="collapse-@counter">
-                                            @question.QuestionText
-                                        </button>
-                                    </h2>
-                                </div>
-                                <div id="collapse-@counter" class="collapse" aria-labelledby="heading-@counter" data-parent="#quizDetailsQuestion">
-                                    <div class="card-body">
-                                        @foreach (var answer in @question.AnswerOptions)
-                                        {
-                                            <div>@answer.AnswerText</div>
-                                        }
+                            @if (User.IsInRole("Restricted"))
+                            {
+                                <div class="card">
+                                    <div class="card-header" id="heading-@counter">
+                                        <span>@question.QuestionText</span>
                                     </div>
                                 </div>
-                            </div>
+                            }
+                            else if(User.IsInRole("View"))
+                            {
+                                <div class="card">
+                                    <div class="card-header" id="heading-@counter">
+                                        <h2 class="mb-0">
+                                            <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapse-@counter" aria-expanded="true" aria-controls="collapse-@counter">
+                                                @question.QuestionText
+                                            </button>
+                                        </h2>
+                                    </div>
+                                    <div id="collapse-@counter" class="collapse" aria-labelledby="heading-@counter" data-parent="#quizDetailsQuestion">
+                                        <div class="card-body">
+                                            @{
+                                                var answerIndex = 'A';
+                                                foreach (var answer in @question.AnswerOptions)
+                                                {
+                                                    <div>@answerIndex - @answer.AnswerText</div>
+                                                    answerIndex++;
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="card">
+                                    <div class="card-header d-flex" id="heading-@counter">
+                                        <h2 class="mb-0 mr-auto p-2">
+                                                <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapse-@counter" aria-expanded="true" aria-controls="collapse-@counter">
+                                                    @question.QuestionText
+                                                </button>
+
+                                            </h2>
+                                            <a class="p-2"asp-action="Edit" asp-controller="Questions" asp-route-id="@question.QuestionId">edit</a>
+                                            <a class="p-2" asp-action="Delete" asp-controller="Questions" asp-route-id="@question.QuestionId">delete</a>
+                                    </div>
+                                    <div id="collapse-@counter" class="collapse" aria-labelledby="heading-@counter" data-parent="#quizDetailsQuestion">
+                                        <div class="card-body">
+                                            @{
+                                                var answerIndex = 'A';
+                                                foreach (var answer in @question.AnswerOptions)
+                                                {
+                                                    <div>@answerIndex - @answer.AnswerText</div>
+                                                    answerIndex++;
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            }
                         </li>
                         counter += 1;
                     }
@@ -43,10 +91,5 @@
     </dl>
 </div>
 <div>
-    @if (User.IsInRole("Edit"))
-    {
-        <a asp-action="Edit" asp-route-id="@Model.QuizId">Edit</a>
-    }
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Back to Quiz List</a>
 </div>
-

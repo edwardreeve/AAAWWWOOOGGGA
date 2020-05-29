@@ -19,13 +19,12 @@ namespace QuizManager.Controllers
             _context = context;
         }
 
-        // GET: Questions
-        public async Task<IActionResult> Index()
+        //Making private as not needed yet in current app implementation
+        private async Task<IActionResult> Index()
         {
             return View(await _context.Question.ToListAsync());
         }
-
-        // GET: Questions/Details/5
+        
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -60,7 +59,7 @@ namespace QuizManager.Controllers
             {
                 _context.Add(question);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", "Quizzes", new { id = question.QuizId });
             }
             return View(question);
         }
@@ -73,12 +72,17 @@ namespace QuizManager.Controllers
                 return NotFound();
             }
 
-            var question = await _context.Question.FindAsync(id);
-            if (question == null)
+            var questions = await _context.Question
+                .Where(question => question.QuestionId == id)
+                .Include(question => question.AnswerOptions)
+                .ToListAsync();
+
+            var selectedQuestion = questions.FirstOrDefault();
+            if (selectedQuestion == null)
             {
                 return NotFound();
             }
-            return View(question);
+            return View(selectedQuestion);
         }
 
         // POST: Questions/Edit/5
@@ -86,13 +90,12 @@ namespace QuizManager.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("QuestionId,QuizId,QuestionText,Position")] Question question)
+        public async Task<IActionResult> Edit(int id, [Bind("QuestionId,QuizId,QuestionText,Position,AnswerOptions,AnswerOptions.AnswerOption.Correct")] Question question)
         {
             if (id != question.QuestionId)
             {
                 return NotFound();
             }
-
             if (ModelState.IsValid)
             {
                 try
@@ -111,7 +114,7 @@ namespace QuizManager.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", "Quizzes", new { id = question.QuizId});
             }
             return View(question);
         }
@@ -142,7 +145,7 @@ namespace QuizManager.Controllers
             var question = await _context.Question.FindAsync(id);
             _context.Question.Remove(question);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Details", "Quizzes", new { id = question.QuizId });
         }
 
         private bool QuestionExists(int id)

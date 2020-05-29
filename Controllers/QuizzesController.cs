@@ -34,11 +34,24 @@ namespace QuizManager.Controllers
                 return NotFound();
             }
 
-            var quizzes = await _context.Quiz
-                .Where(quiz => quiz.QuizId == id)
-                .Include((quiz => quiz.Questions))
+            var quizzes = new List<Quiz>();
+            //Only load quiz + questions if user is Restricted to save DB load
+            if (User.IsInRole("Restricted"))
+            {
+                quizzes = await _context.Quiz
+                    .Where(quiz => quiz.QuizId == id)
+                    .Include((quiz => quiz.Questions))
+                    .ToListAsync();
+            }
+            //Otherwise also load answers
+            else
+            {
+                quizzes = await _context.Quiz
+                    .Where(quiz => quiz.QuizId == id)
+                    .Include((quiz => quiz.Questions))
                     .ThenInclude(question => question.AnswerOptions)
-                .ToListAsync();
+                    .ToListAsync();
+            }
 
             var selectedQuiz = quizzes.FirstOrDefault();
 
@@ -80,16 +93,12 @@ namespace QuizManager.Controllers
                 return NotFound();
             }
 
-            var quizzes = await _context.Quiz
-                .Where(quiz => quiz.QuizId == id)
-                .Include((quiz => quiz.Questions))
-                .ThenInclude(question => question.AnswerOptions)
-                .ToListAsync();
-
-            var selectedQuiz = quizzes.FirstOrDefault();
-
-            selectedQuiz.Questions = selectedQuiz.Questions.OrderBy(question => question.Position).ToList();
-            return View(selectedQuiz);
+            var quiz = await _context.Quiz.FindAsync(id);
+            if (quiz == null)
+            {
+                return NotFound();
+            }
+            return View(quiz);
         }
 
         // POST: Quizzes/Edit/5

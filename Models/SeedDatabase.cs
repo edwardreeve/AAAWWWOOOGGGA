@@ -72,7 +72,7 @@ namespace QuizManager.Models
                 {
                     var question = new Question
                     {
-                        QuestionText = $"Text of Question {questionIdCounter} for Quiz {quiz.QuizId}",
+                        QuestionText = $"Text of Question {questionIdCounter} for '{quiz.Name}' (id:{quiz.QuizId})",
                         QuizId = quiz.QuizId,
                         Position = positionCounter
                     };
