@@ -6,7 +6,7 @@
 }
 
 <h1>Edit</h1>
-
+<script src="https://raw.githack.com/SortableJS/Sortable/master/Sortable.js"></script>
 <h4>Quiz</h4>
 <hr />
 <div class="row">
@@ -25,11 +25,46 @@
         </form>
     </div>
 </div>
+<h4>Questions</h4>
+<div id="simpleList" class="list-group">
+    @foreach (var question in @Model.Questions)
+    {
 
+        <div class="list-group-item">
+            <a class="btn btn-light" data-toggle="collapse" href="#@question.QuestionId" role="button" aria-expanded="false" aria-controls="multiCollapseExample1">@question.QuestionText</a>
+            <a asp-action="Edit" asp-controller="Questions" asp-route-id="@question.QuestionId">Edit</a>
+            <a asp-action="Delete" asp-controller="Questions" asp-route-id="@question.QuestionId">Delete</a>
+        </div>
+    }
+</div>
+                    @*@{var counter = 1;
+                        foreach (var question in @Model.Questions)
+                        {
+                            <tr>
+                                    <td>
+                                        <div class="card">
+                                            <div class="card-header" id="heading-@counter">
+                                                <h2 class="mb-0">
+                                                    @question.QuestionText
+                                                </h2>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                    <a asp-action="Edit" asp-route-id="@question.QuizId">Edit</a>
+                                    <a asp-action="Delete" asp-route-id="@question.QuizId">Delete</a>
+                                    </td>
+                            </tr>
+                            counter += 1;
+                        }
+                    }*@
+   
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
-
+<script>Sortable.create(simpleList, { /* options */ });
+</script>
 @section Scripts {
+
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

@@ -16,7 +16,7 @@
             <input type="hidden" asp-for="QuestionId" />
             <div class="form-group">
                 <label asp-for="QuizId" class="control-label"></label>
-                <input asp-for="QuizId" class="form-control"></input>
+                <select asp-for="QuizId" class="form-control" asp-items="ViewBag.QuizId"></select>
                 <span asp-validation-for="QuizId" class="text-danger"></span>
             </div>
             <div class="form-group">

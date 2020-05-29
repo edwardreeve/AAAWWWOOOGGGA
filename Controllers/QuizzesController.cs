@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -19,20 +20,13 @@ namespace QuizManager.Controllers
             _context = context;
         }
 
-        // GET: Quizzes
+        [Authorize]
         public async Task<IActionResult> Index()
         {
-            var quizzes = new List<Quiz>();
-            using (_context)
-            { 
-                quizzes = _context.Quiz
-                    .Include(quiz => quiz.Questions)
-                    .ThenInclude(question => question.AnswerOptions).ToList();
-            }
-            return View(quizzes);
+            return View(await _context.Quiz.ToListAsync());
         }
-
-        // GET: Quizzes/Details/5
+        
+        [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -53,7 +47,8 @@ namespace QuizManager.Controllers
             return View(selectedQuiz);
         }
 
-        // GET: Quizzes/Create
+        [Authorize(Roles = "Edit")]
+
         public IActionResult Create()
         {
             return View();
@@ -62,6 +57,7 @@ namespace QuizManager.Controllers
         // POST: Quizzes/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Edit")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("QuizId,Name")] Quiz quiz)
@@ -75,7 +71,8 @@ namespace QuizManager.Controllers
             return View(quiz);
         }
 
-        // GET: Quizzes/Edit/5
+        [Authorize(Roles = "Edit")]
+
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -83,17 +80,22 @@ namespace QuizManager.Controllers
                 return NotFound();
             }
 
-            var quiz = await _context.Quiz.FindAsync(id);
-            if (quiz == null)
-            {
-                return NotFound();
-            }
-            return View(quiz);
+            var quizzes = await _context.Quiz
+                .Where(quiz => quiz.QuizId == id)
+                .Include((quiz => quiz.Questions))
+                .ThenInclude(question => question.AnswerOptions)
+                .ToListAsync();
+
+            var selectedQuiz = quizzes.FirstOrDefault();
+
+            selectedQuiz.Questions = selectedQuiz.Questions.OrderBy(question => question.Position).ToList();
+            return View(selectedQuiz);
         }
 
         // POST: Quizzes/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Edit")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("QuizId,Name")] Quiz quiz)
@@ -126,7 +128,7 @@ namespace QuizManager.Controllers
             return View(quiz);
         }
 
-        // GET: Quizzes/Delete/5
+        [Authorize(Roles = "Edit")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -144,7 +146,7 @@ namespace QuizManager.Controllers
             return View(quiz);
         }
 
-        // POST: Quizzes/Delete/5
+        [Authorize(Roles = "Edit")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
