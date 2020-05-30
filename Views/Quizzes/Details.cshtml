@@ -15,7 +15,7 @@
 
 <div>
     <hr />
-    <h4>Questions</h4>
+    <h4>Select question to view answers</h4>
     <dl class="row">
         <div class="container " id="quizDetailsQuestion">
             <ol>
@@ -29,12 +29,13 @@
                             }
                             else if(User.IsInRole("View"))
                             {
-                            
-                            <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapse-@counter" aria-expanded="true" aria-controls="collapse-@counter">
+                        <p>
+                            <button class="btn btn-light" type="button" data-toggle="collapse" data-target="#collapse-@counter" aria-expanded="true" aria-controls="collapse-@counter">
                                 @question.QuestionText
                             </button>
+                        </p>
                             <div id="collapse-@counter" class="collapse" aria-labelledby="heading-@counter" data-parent="#quizDetailsQuestion">
-                                <div class="card-body">
+                                <div class="card card-body">
                                     @{
                                         var answerIndex = 'A';
                                         foreach (var answer in @question.AnswerOptions)
