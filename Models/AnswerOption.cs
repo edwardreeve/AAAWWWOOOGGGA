@@ -12,9 +12,8 @@ namespace QuizManager.Models
         [Required]
         public int QuestionId { get; set; }
         [Display(Name = "Answer Text")]
-        [Required]
         public string AnswerText { get; set; }
-        [Required]
+      
         public bool Correct { get; set; }
     }
 }

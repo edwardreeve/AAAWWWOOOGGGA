@@ -6,49 +6,76 @@
 <h4>Edit Question</h4>
 <hr/>
 <div class="container-fluid">
-<form asp-action="Edit">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <input type="hidden" asp-for="QuestionId"/>
-    <input type="hidden" asp-for="QuizId"/>
-    <input type="hidden" asp-for="Position"/>
-    <div class="row">
-        <div class="col-md">
-            <div class="form-group">
-                <label asp-for="QuestionText" class="control-label"></label>
-                <input asp-for="QuestionText" class="form-control"/>
-                <span asp-validation-for="QuestionText" class="text-danger"></span>
+    <form asp-action="Edit">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="QuestionId"/>
+        <input type="hidden" asp-for="QuizId"/>
+        <input type="hidden" asp-for="Position"/>
+        <div class="row">
+            <div class="col-md">
+                <div class="form-group">
+                    <label asp-for="QuestionText" class="control-label"></label>
+                    <input asp-for="QuestionText" class="form-control"/>
+                    <span asp-validation-for="QuestionText" class="text-danger"></span>
+                </div>
             </div>
         </div>
-    </div>
-    <div>
+        <div class="row">
+            <div class="col-1"></div>
+            <label class="col-6" asp-for="AnswerOptions"></label>
+            <label class="col-1">Correct?</label>
+        </div>
+        
+        <div>
+            @{
+                var answerCounter = 0;
+                var answerIndex = 'A';
 
-        @{
-            var answerCounter = 0;
-            foreach (var answer in Model.AnswerOptions)
-            {
-                <div class="row">
-                    <div class="col-6">
-                        <input type="hidden" asp-for="AnswerOptions[answerCounter].QuestionId" />
-                        <input type="hidden" asp-for="AnswerOptions[answerCounter].AnswerOptionId" />
-                        <input asp-for="AnswerOptions[answerCounter].AnswerText" class="form-control" />
+                foreach (var answer in Model.AnswerOptions)
+                {
+                    <div class="row">
+                        <div class="col-1" align="right">@answerIndex</div>
+                        <div class="col-6">
+                            <input type="hidden" asp-for="AnswerOptions[answerCounter].QuestionId"/>
+                            <input type="hidden" asp-for="AnswerOptions[answerCounter].AnswerOptionId"/>
+                            <input asp-for="AnswerOptions[answerCounter].AnswerText" class="form-control"/>
+                        </div>
+                        <div class="col-1" align="center">
+                            <input type="checkbox" asp-for="AnswerOptions[answerCounter].Correct">
+                        </div>
+                        <div class="col-1">
+                            <a asp-action="Delete" asp-controller="AnswerOptions" asp-route-id=@answer.AnswerOptionId>delete</a>
+                        </div>
                     </div>
-                    <div class="col-1">
-                        <input type="checkbox" asp-for="AnswerOptions[answerCounter].Correct">
-                    </div>
-                    <div>
-                        <a asp-action="Delete" asp-controller="AnswerOptions" asp-route-id=@answer.AnswerOptionId>delete</a>
-                    </div>
-
-                </div>
-                answerCounter += 1;
+                    answerCounter += 1;
+                    answerIndex++;
+                }
             }
-        }
-        @Html.ValidationMessage("AnswerOptionsError", new { style = "color:red;"})
-    </div>
-    <div class="form-group">
-        <input type="submit" value="Save" class="btn btn-primary"/>
-    </div>
-</form>
+            <div class="row">
+                <div class="col-1"></div>
+                <div class="col-6">
+                    @Html.ValidationMessage("AnswerOptionsError", new { style = "color:red;"})
+                </div>
+            </div> 
+            <div class="row">
+                <div class="col-1"></div>
+                <div class="col-6">
+                    @Html.ValidationMessage("MustHaveCorrectAnswer", new { style = "color:red;"})
+                </div>
+            </div> 
+            <div class="row">
+                <div class="col-1"></div>
+                <div class="col-6">
+                    @Html.ValidationMessage("BlankAnswerError", new { style = "color:red;"})
+                </div>
+            </div>
+        </div>
+        <hr/>
+        <div class="form-group">
+            <input type="submit" value="Save" class="btn btn-primary"/>
+        </div>
+    </form>
+    <button class="btn btn-success" onclick="location.href = '@Url.Action("AddAnswerOption", "Questions", new { id = @Model.QuestionId})';">Add Answer Option</button>
 </div>
 
 

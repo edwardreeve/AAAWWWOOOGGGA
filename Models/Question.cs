@@ -8,7 +8,6 @@ namespace QuizManager.Models
 {
     public class Question
     {
-        [Required]
         public int QuestionId { get; set; }
         [Required]
         public int QuizId { get; set; }
@@ -16,7 +15,8 @@ namespace QuizManager.Models
         [Display(Name = "Question Text")]
         public string QuestionText { get; set; }
         public int Position { get; set; }
-        [Required, MinLength(3), MaxLength(5)]
+        [Required]
+        [Display(Name = "Answer Options")]
         public List<AnswerOption> AnswerOptions { get; set; }
     }
 }

@@ -55,15 +55,7 @@ namespace QuizManager.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("QuestionId,QuizId,QuestionText,Position")] Question question)
         {
-            if (question.AnswerOptions.Count < 3 && question.AnswerOptions.Count > 5)
-            {
-                ModelState.AddModelError("AnswerOptionsError", "Please enter between 3 and 5 answer options");
-            }
-
-            if (!question.AnswerOptions.Any(answer => answer.Correct))
-            {
-                ModelState.AddModelError("AnswerOptionsError", "At least one answer option must be marked as Correct");
-            }
+            ValidateAnswerOptions(question);
 
             if (!ModelState.IsValid)
             {
@@ -101,22 +93,19 @@ namespace QuizManager.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("QuestionId,QuizId,QuestionText,Position,AnswerOptions,AnswerOptions.AnswerOption.Correct")] Question question)
+        public async Task<IActionResult> Edit(int id, [Bind("QuestionId," +
+                                                            "QuizId," +
+                                                            "QuestionText," +
+                                                            "Position," +
+                                                            "AnswerOptions," +
+                                                            "AnswerOptions.AnswerOption.Correct")] Question question)
         {
             if (id != question.QuestionId)
             {
                 return NotFound();
             }
 
-            if (question.AnswerOptions.Count < 3 || question.AnswerOptions.Count > 5)
-            {
-                ModelState.AddModelError("AnswerOptionsError", "Please enter between 3 and 5 answer options");
-            }
-
-            if (!question.AnswerOptions.Any(answer => answer.Correct))
-            {
-                ModelState.AddModelError("AnswerOptionsError", "At least one answer option must be marked as Correct");
-            }
+            ValidateAnswerOptions(question);
 
             if (!ModelState.IsValid)
             {
@@ -171,9 +160,49 @@ namespace QuizManager.Controllers
             return RedirectToAction("Details", "Quizzes", new { id = question.QuizId });
         }
 
+        public async Task<IActionResult> AddAnswerOption(int id)
+        {
+            var questions = await _context.Question
+                .Where(question => question.QuestionId == id)
+                .Include(question => question.AnswerOptions)
+                .ToListAsync();
+
+            var selectedQuestion = questions.FirstOrDefault();
+
+            var newAnswer = new AnswerOption()
+            {
+                AnswerText = "",
+                QuestionId = id
+            };
+
+            selectedQuestion.AnswerOptions.Add(newAnswer);
+            _context.Question.Update(selectedQuestion);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Edit", new {id = id});
+        }
+
         private bool QuestionExists(int id)
         {
             return _context.Question.Any(e => e.QuestionId == id);
+        }
+
+        private void ValidateAnswerOptions(Question question)
+        {
+            if (question.AnswerOptions.Count < 3 || question.AnswerOptions.Count > 5)
+            {
+                ModelState.AddModelError("AnswerOptionsError", "Please enter between 3 and 5 answer options");
+            }
+
+            if (!question.AnswerOptions.Any(answer => answer.Correct))
+            {
+                ModelState.AddModelError("MustHaveCorrectAnswer", "At least one answer option must be marked as Correct");
+            }
+
+            if (question.AnswerOptions.Any(answer => answer.AnswerText == null))
+            {
+                ModelState.AddModelError("BlankAnswerError", "Answers can't be left blank");
+            }
         }
     }
 }
