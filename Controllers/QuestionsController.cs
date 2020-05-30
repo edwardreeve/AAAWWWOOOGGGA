@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
 using QuizManager.Data;
 using QuizManager.Models;
@@ -73,6 +75,14 @@ namespace QuizManager.Controllers
             if (id == null)
             {
                 return NotFound();
+            }
+
+            /*If this action has been reached via the 'AddAnswerOption' method, it will let us know 
+           using TempData if that action would have resulted in too many answers*/
+            if (TempData["CannotAddAnswers"] != null)
+            {
+                ModelState.AddModelError("AnswerOptionsError", "Questions can't have more than 5 Answer options");
+                TempData.Clear();
             }
 
             var questions = await _context.Question
@@ -169,6 +179,14 @@ namespace QuizManager.Controllers
 
             var selectedQuestion = questions.FirstOrDefault();
 
+            if (selectedQuestion.AnswerOptions.Count >= 5)
+            {
+                TempData["CannotAddAnswers"] = true;
+                TempData.Save();
+                // need to use the Post method in order to validate
+                return RedirectToAction("Edit", new { id = id, Question = selectedQuestion });
+            }
+
             var newAnswer = new AnswerOption()
             {
                 AnswerText = "",
@@ -191,7 +209,7 @@ namespace QuizManager.Controllers
         {
             if (question.AnswerOptions.Count < 3 || question.AnswerOptions.Count > 5)
             {
-                ModelState.AddModelError("AnswerOptionsError", "Please enter between 3 and 5 answer options");
+                ModelState.AddModelError("AnswerOptionsError", "Questions must have between 3 and 5 answer options");
             }
 
             if (!question.AnswerOptions.Any(answer => answer.Correct))
@@ -202,6 +220,14 @@ namespace QuizManager.Controllers
             if (question.AnswerOptions.Any(answer => answer.AnswerText == null))
             {
                 ModelState.AddModelError("BlankAnswerError", "Answers can't be left blank");
+            }
+
+            var anyDuplicateAnswers = question.AnswerOptions.GroupBy(ans => ans.AnswerText)
+                .Any(group => group.Count() > 1);
+
+            if (anyDuplicateAnswers)
+            {
+                ModelState.AddModelError("DuplicateAnswerError", "Can't save a question with 2 or more identical answers");
             }
         }
     }
