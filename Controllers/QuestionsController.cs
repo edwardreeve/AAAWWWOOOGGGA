@@ -79,9 +79,18 @@ namespace QuizManager.Controllers
 
             /*If this action has been reached via the 'AddAnswerOption' method, it will let us know 
            using TempData if that action would have resulted in too many answers*/
-            if (TempData["CannotAddAnswers"] != null)
+            if (TempData.Count > 0)
             {
-                ModelState.AddModelError("AnswerOptionsError", "Questions can't have more than 5 Answer options");
+                if (TempData["CannotAddAnswers"] != null)
+                {
+                    ModelState.AddModelError("AnswerOptionsError", "Questions can't have more than 5 Answer options");
+                }
+
+                if (TempData["CannotDeleteAnswers"] != null)
+                {
+                    ModelState.AddModelError("AnswerOptionsError", "Questions can't have less than 3 Answer options");
+                }
+
                 TempData.Clear();
             }
 
@@ -183,7 +192,6 @@ namespace QuizManager.Controllers
             {
                 TempData["CannotAddAnswers"] = true;
                 TempData.Save();
-                // need to use the Post method in order to validate
                 return RedirectToAction("Edit", new { id = id, Question = selectedQuestion });
             }
 
@@ -198,6 +206,25 @@ namespace QuizManager.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Edit", new {id = id});
+        }
+
+        public async Task<IActionResult> DeleteAnswerOption(int answerId, int questionId)
+        {
+            var questions = await _context.Question
+                .Where(question => question.QuestionId == questionId)
+                .Include(question => question.AnswerOptions)
+                .ToListAsync();
+
+            var selectedQuestion = questions.FirstOrDefault();
+
+            if (selectedQuestion.AnswerOptions.Count <= 3)
+            {
+                TempData["CannotDeleteAnswers"] = true;
+                TempData.Save();
+                return RedirectToAction("Edit", new { id = questionId });
+            }
+
+            return RedirectToAction("Delete", "AnswerOptions", new {id = answerId});
         }
 
         private bool QuestionExists(int id)
@@ -222,7 +249,9 @@ namespace QuizManager.Controllers
                 ModelState.AddModelError("BlankAnswerError", "Answers can't be left blank");
             }
 
-            var anyDuplicateAnswers = question.AnswerOptions.GroupBy(ans => ans.AnswerText)
+            var anyDuplicateAnswers = question.AnswerOptions
+                .Where(ans => ans.AnswerText != null)
+                .GroupBy(ans => ans.AnswerText)
                 .Any(group => group.Count() > 1);
 
             if (anyDuplicateAnswers)

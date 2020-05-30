@@ -44,7 +44,9 @@
                         <input type="checkbox" asp-for="AnswerOptions[answerCounter].Correct">
                     </div>
                     <div class="col-1">
-                        <a asp-action="Delete" asp-controller="AnswerOptions" asp-route-id=@answer.AnswerOptionId>delete</a>
+                        <a href="@Url.Action("DeleteAnswerOption",
+                                     "Questions",
+                                     new { answerId = answer.AnswerOptionId, questionId = @Model.QuestionId})">delete</a>
                     </div>
                 </div>
                 answerCounter += 1;
@@ -70,6 +72,13 @@
             <div class="col-1"></div>
             <div class="col-6">
                 @Html.ValidationMessage("BlankAnswerError", new { style = "color:red;"})
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-1"></div>
+            <div class="col-6">
+                @Html.ValidationMessage("DuplicateAnswerError", new { style = "color:red;"})
             </div>
         </div>
         <hr/>
