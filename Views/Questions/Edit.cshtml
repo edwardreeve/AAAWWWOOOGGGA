@@ -20,26 +20,31 @@
             </div>
         </div>
     </div>
-    @{
-        var answerCounter = 0;
-    foreach (var answer in Model.AnswerOptions)
-        {
-        <div class="row">
-            <div class="col-6">
-                <input type="hidden" asp-for="AnswerOptions[answerCounter].QuestionId"/>
-                <input type="hidden" asp-for="AnswerOptions[answerCounter].AnswerOptionId"/>
-                <input asp-for="AnswerOptions[answerCounter].AnswerText" class="form-control"/>
-            </div>
-            <div class="col-1">
-                <input type="checkbox" asp-for="AnswerOptions[answerCounter].Correct">
-            </div>
-            <div>
-                <a asp-action="Delete" asp-controller="AnswerOptions" asp-route-id=@answer.AnswerOptionId>delete</a>
-            </div>
-        </div>
-        answerCounter += 1;
+    <div>
+
+        @{
+            var answerCounter = 0;
+            foreach (var answer in Model.AnswerOptions)
+            {
+                <div class="row">
+                    <div class="col-6">
+                        <input type="hidden" asp-for="AnswerOptions[answerCounter].QuestionId" />
+                        <input type="hidden" asp-for="AnswerOptions[answerCounter].AnswerOptionId" />
+                        <input asp-for="AnswerOptions[answerCounter].AnswerText" class="form-control" />
+                    </div>
+                    <div class="col-1">
+                        <input type="checkbox" asp-for="AnswerOptions[answerCounter].Correct">
+                    </div>
+                    <div>
+                        <a asp-action="Delete" asp-controller="AnswerOptions" asp-route-id=@answer.AnswerOptionId>delete</a>
+                    </div>
+
+                </div>
+                answerCounter += 1;
+            }
         }
-    }
+        @Html.ValidationMessage("AnswerOptionsError", new { style = "color:red;"})
+    </div>
     <div class="form-group">
         <input type="submit" value="Save" class="btn btn-primary"/>
     </div>

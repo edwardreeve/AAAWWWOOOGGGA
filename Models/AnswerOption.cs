@@ -11,6 +11,7 @@ namespace QuizManager.Models
         public int AnswerOptionId { get; set; }
         [Required]
         public int QuestionId { get; set; }
+        [Display(Name = "Answer Text")]
         [Required]
         public string AnswerText { get; set; }
         [Required]

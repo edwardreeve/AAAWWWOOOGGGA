@@ -55,13 +55,19 @@ namespace QuizManager.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("QuestionId,QuizId,QuestionText,Position")] Question question)
         {
-            if (ModelState.IsValid)
+            if (question.AnswerOptions.Count < 3 && question.AnswerOptions.Count > 5)
             {
-                _context.Add(question);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Details", "Quizzes", new { id = question.QuizId });
+                ModelState.AddModelError("AnswerOptionsError", "Please enter between 3 and 5 answer options");
             }
-            return View(question);
+
+            if (!ModelState.IsValid)
+            {
+                return View(question);
+            }
+
+            _context.Add(question);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Details", "Quizzes", new { id = question.QuizId });
         }
 
         // GET: Questions/Edit/5
@@ -96,27 +102,32 @@ namespace QuizManager.Controllers
             {
                 return NotFound();
             }
-            if (ModelState.IsValid)
+            if (question.AnswerOptions.Count < 3 || question.AnswerOptions.Count > 5)
             {
-                try
-                {
-                    _context.Update(question);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!QuestionExists(question.QuestionId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction("Details", "Quizzes", new { id = question.QuizId});
+                ModelState.AddModelError("AnswerOptionsError", "Please enter between 3 and 5 answer options");
             }
-            return View(question);
+            if (!ModelState.IsValid)
+            {
+                return View(question);
+            }
+
+            try
+            {
+                _context.Update(question);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!QuestionExists(question.QuestionId))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction("Details", "Quizzes", new { id = question.QuizId});
         }
 
         // GET: Questions/Delete/5
