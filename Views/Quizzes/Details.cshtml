@@ -25,11 +25,7 @@
                         <li>
                             @if (User.IsInRole("Restricted"))
                             {
-                                <div class="card">
-                                    <div class="card-header" id="heading-@counter">
-                                        <span>@question.QuestionText</span>
-                                    </div>
-                                </div>
+                                <span>@question.QuestionText</span>
                             }
                             else if(User.IsInRole("View"))
                             {
