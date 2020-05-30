@@ -60,6 +60,11 @@ namespace QuizManager.Controllers
                 ModelState.AddModelError("AnswerOptionsError", "Please enter between 3 and 5 answer options");
             }
 
+            if (!question.AnswerOptions.Any(answer => answer.Correct))
+            {
+                ModelState.AddModelError("AnswerOptionsError", "At least one answer option must be marked as Correct");
+            }
+
             if (!ModelState.IsValid)
             {
                 return View(question);
@@ -102,10 +107,17 @@ namespace QuizManager.Controllers
             {
                 return NotFound();
             }
+
             if (question.AnswerOptions.Count < 3 || question.AnswerOptions.Count > 5)
             {
                 ModelState.AddModelError("AnswerOptionsError", "Please enter between 3 and 5 answer options");
             }
+
+            if (!question.AnswerOptions.Any(answer => answer.Correct))
+            {
+                ModelState.AddModelError("AnswerOptionsError", "At least one answer option must be marked as Correct");
+            }
+
             if (!ModelState.IsValid)
             {
                 return View(question);
