@@ -53,32 +53,16 @@
                 answerIndex++;
             }
         }
-
         <div class="row">
             <div class="col-1"></div>
-            <div class="col-6">
-                @Html.ValidationMessage("AnswerOptionsError", new { style = "color:red;"})
-            </div>
-        </div> 
-
-        <div class="row">
-            <div class="col-1"></div>
-            <div class="col-6">
-                @Html.ValidationMessage("MustHaveCorrectAnswer", new { style = "color:red;"})
-            </div>
-        </div> 
-
-        <div class="row">
-            <div class="col-1"></div>
-            <div class="col-6">
-                @Html.ValidationMessage("BlankAnswerError", new { style = "color:red;"})
-            </div>
+                <div class="col-6 text-danger"><span asp-validation-for="AnswerOptions"></span>
+                </div>
         </div>
-        
+
         <div class="row">
             <div class="col-1"></div>
-            <div class="col-6">
-                @Html.ValidationMessage("DuplicateAnswerError", new { style = "color:red;"})
+            <div class="col-6 text-danger">
+                @Html.ValidationMessage("AnswerOptionsError")
             </div>
         </div>
         <hr/>

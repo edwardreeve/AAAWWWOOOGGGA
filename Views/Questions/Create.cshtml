@@ -18,7 +18,7 @@
                 <input type="hidden" asp-for="QuizId"/>
                 <span asp-validation-for="QuestionText" class="text-danger"></span>
             </div>
-            <table>
+            <table asp-validation-for="AnswerOptions">
                 <tr>
                     <th class="col-1"></th>
                     <th style="min-width: 80%" class="col-6">@Html.Label("AnswerOptions")</th>

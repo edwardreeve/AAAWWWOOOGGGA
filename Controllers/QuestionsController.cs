@@ -57,7 +57,7 @@ namespace QuizManager.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("QuestionId,QuizId,QuestionText,Position")] Question question)
         {
-            ValidateAnswerOptions(question);
+           // ValidateAnswerOptions(question);
 
             if (!ModelState.IsValid)
             {
@@ -124,7 +124,7 @@ namespace QuizManager.Controllers
                 return NotFound();
             }
 
-            ValidateAnswerOptions(question);
+           // ValidateAnswerOptions(question);
 
             if (!ModelState.IsValid)
             {
@@ -181,6 +181,7 @@ namespace QuizManager.Controllers
 
         public async Task<IActionResult> AddAnswerOption(int id)
         {
+            //Retrieve Question
             var questions = await _context.Question
                 .Where(question => question.QuestionId == id)
                 .Include(question => question.AnswerOptions)
@@ -188,6 +189,7 @@ namespace QuizManager.Controllers
 
             var selectedQuestion = questions.FirstOrDefault();
 
+            //Check if it already has the max number of answers, return if so
             if (selectedQuestion.AnswerOptions.Count >= 5)
             {
                 TempData["CannotAddAnswers"] = true;
@@ -195,21 +197,25 @@ namespace QuizManager.Controllers
                 return RedirectToAction("Edit", new { id = id, Question = selectedQuestion });
             }
 
+            //Create new blank answer
             var newAnswer = new AnswerOption()
             {
                 AnswerText = "",
                 QuestionId = id
             };
 
+            //Add to question and save in DB
             selectedQuestion.AnswerOptions.Add(newAnswer);
             _context.Question.Update(selectedQuestion);
             await _context.SaveChangesAsync();
 
+            //Reload the edit question view
             return RedirectToAction("Edit", new {id = id});
         }
 
         public async Task<IActionResult> DeleteAnswerOption(int answerId, int questionId)
         {
+            //Retrieve Question
             var questions = await _context.Question
                 .Where(question => question.QuestionId == questionId)
                 .Include(question => question.AnswerOptions)
@@ -217,6 +223,7 @@ namespace QuizManager.Controllers
 
             var selectedQuestion = questions.FirstOrDefault();
 
+            //Check if it already has the min number of questions, return if so
             if (selectedQuestion.AnswerOptions.Count <= 3)
             {
                 TempData["CannotDeleteAnswers"] = true;
@@ -224,40 +231,13 @@ namespace QuizManager.Controllers
                 return RedirectToAction("Edit", new { id = questionId });
             }
 
+            //Redirect for confirmation of delete
             return RedirectToAction("Delete", "AnswerOptions", new {id = answerId});
         }
 
         private bool QuestionExists(int id)
         {
             return _context.Question.Any(e => e.QuestionId == id);
-        }
-
-        private void ValidateAnswerOptions(Question question)
-        {
-            if (question.AnswerOptions.Count < 3 || question.AnswerOptions.Count > 5)
-            {
-                ModelState.AddModelError("AnswerOptionsError", "Questions must have between 3 and 5 answer options");
-            }
-
-            if (!question.AnswerOptions.Any(answer => answer.Correct))
-            {
-                ModelState.AddModelError("MustHaveCorrectAnswer", "At least one answer option must be marked as Correct");
-            }
-
-            if (question.AnswerOptions.Any(answer => answer.AnswerText == null))
-            {
-                ModelState.AddModelError("BlankAnswerError", "Answers can't be left blank");
-            }
-
-            var anyDuplicateAnswers = question.AnswerOptions
-                .Where(ans => ans.AnswerText != null)
-                .GroupBy(ans => ans.AnswerText)
-                .Any(group => group.Count() > 1);
-
-            if (anyDuplicateAnswers)
-            {
-                ModelState.AddModelError("DuplicateAnswerError", "Can't save a question with 2 or more identical answers");
-            }
         }
     }
 }
