@@ -13,12 +13,10 @@
         <input type="hidden" asp-for="Position"/>
 
         <div class="row">
-            <div class="col-md">
-                <div class="form-group">
-                    <label asp-for="QuestionText" class="control-label"></label>
-                    <input asp-for="QuestionText" class="form-control"/>
-                    <span asp-validation-for="QuestionText" class="text-danger"></span>
-                </div>
+            <div class="col-md form-group">
+                <label asp-for="QuestionText" class="control-label"></label>
+                <input asp-for="QuestionText" class="form-control"/>
+                <span asp-validation-for="QuestionText" class="text-danger"></span>
             </div>
         </div>
 
@@ -36,7 +34,6 @@
                 <div class="row" style="padding-bottom: 5px">
                     <div class="col-1" align="right">@answerIndex</div>
                     <div class="col-6">
-                        <input type="hidden" asp-for="AnswerOptions[answerCounter].QuestionId"/>
                         <input type="hidden" asp-for="AnswerOptions[answerCounter].AnswerOptionId"/>
                         <input asp-for="AnswerOptions[answerCounter].AnswerText" class="form-control"/>
                     </div>

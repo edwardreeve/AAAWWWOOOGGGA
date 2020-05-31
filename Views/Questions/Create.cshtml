@@ -6,66 +6,65 @@
 }
 
 <h1>Add Question</h1>
-
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
+<div class="container-fluid">
+    <form asp-action="Create">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="QuizId" value="@TempData.Peek("QuizId")" />
+        
+        <div class="row">
+            <div class="form-group col-md">
                 <label asp-for="QuestionText" class="control-label"></label>
                 <input asp-for="QuestionText" class="form-control" />
-                <input type="hidden" asp-for="QuizId" value="@TempData.Peek("QuizId")"/>
                 <span asp-validation-for="QuestionText" class="text-danger"></span>
             </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-1"></div>
+            <div class="col-6">@Html.Label("AnswerOptions")</div>
+            <div class="col-1">@Html.Label("Correct")</div>
+        </div>
+        @{
+            var answerIndex = 'A';
 
-            <div>
-                <div class="row">
-                    <div class="col-1"></div>
-                    <div class="col-6">@Html.Label("AnswerOptions")</div>
-                    <div class="col-1">@Html.Label("Correct")</div>
+            for (var i = 0; i < 3; i++)
+            {
+                <div class="row" style="padding-bottom: 5px">
+                    <div class="col-1" align="right">@answerIndex</div>
+                    <div class="col-6">
+                        <input asp-for="AnswerOptions[i].AnswerText" class="form-control" />
+                    </div>
+                    <div class="col-1" align="center">
+                        <input type="checkbox" asp-for="AnswerOptions[i].Correct">
+                    </div>
                 </div>
-                @{
-                    var answerIndex = 'A';
-                    for (int i = 0; i < 3; i++)
-                    {
-                        <div class="row" style="padding-bottom: 5px">
-                            <div class="col-1" align="right">@answerIndex</div>
-                            <div class="col-6 answerOption">
-                                <input asp-for="AnswerOptions[i].AnswerText" class="form-control"/>
-                            </div>
-                            <div class="col-1 correct" align="center">
-                                <input type="checkbox" asp-for="AnswerOptions[i].Correct">
-                            </div>
-                        </div>
-                        answerIndex++;
-                    }
-                }
+                answerIndex++;
+            }
+        }
+        <div class="row">
+            <div class="col-1"></div>
+            <div class="col-6 text-danger">
+                <span asp-validation-for="AnswerOptions"></span>
             </div>
-            <div class="row">
-                <div class="col-1"></div>
-                <div class="col-6 text-danger"><span asp-validation-for="AnswerOptions"></span>
-                </div>
-            </div>
-            <hr/>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
+        <hr />
+        <div class="form-group">
+            <input type="submit" value="Create" class="btn btn-primary" />
+        </div>
+    </form>
+</div>
+    <div>
+        <a asp-action="Details" asp-controller="Quizzes" asp-route-id="@TempData.Peek("QuizId")">Cancel</a>
     </div>
-</div>
-</table>
-<div>
-    <a asp-action="Details" asp-controller="Quizzes" asp-route-id="@TempData.Peek("QuizId")">Cancel</a>
-</div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
-    <script>
-        $(document).ready(function() {
-            $('input:checkbox').click(function() {
-                $('input:checkbox').not(this).prop('checked', false);
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+        <script>
+            $(document).ready(function () {
+                $('input:checkbox').click(function () {
+                    $('input:checkbox').not(this).prop('checked', false);
+                });
             });
-        });
-    </script>
-}
+        </script>
+    }
