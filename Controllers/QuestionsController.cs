@@ -57,8 +57,6 @@ namespace QuizManager.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("QuestionId,QuizId,QuestionText,Position")] Question question)
         {
-           // ValidateAnswerOptions(question);
-
             if (!ModelState.IsValid)
             {
                 return View(question);
@@ -124,8 +122,6 @@ namespace QuizManager.Controllers
                 return NotFound();
             }
 
-           // ValidateAnswerOptions(question);
-
             if (!ModelState.IsValid)
             {
                 return View(question);
@@ -189,7 +185,8 @@ namespace QuizManager.Controllers
 
             var selectedQuestion = questions.FirstOrDefault();
 
-            //Check if it already has the max number of answers, return if so
+            /*Check if it already has the max number of answers, add error to TempData if so.
+            Edit action checks for temp data and adds validation errors if populated*/  
             if (selectedQuestion.AnswerOptions.Count >= 5)
             {
                 TempData["CannotAddAnswers"] = true;
@@ -223,9 +220,11 @@ namespace QuizManager.Controllers
 
             var selectedQuestion = questions.FirstOrDefault();
 
-            //Check if it already has the min number of questions, return if so
+            /*Check if it already has the min number of questions, add error to TempData if so.
+            Edit action checks for temp data and adds validation errors if populated */
             if (selectedQuestion.AnswerOptions.Count <= 3)
             {
+                TempData["CannotDeleteAnswers"] = true;
                 TempData["CannotDeleteAnswers"] = true;
                 TempData.Save();
                 return RedirectToAction("Edit", new { id = questionId });
