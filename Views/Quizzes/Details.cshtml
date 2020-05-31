@@ -11,6 +11,10 @@
     <div>
         <a asp-action="Edit" asp-route-id="@Model.QuizId">rename</a>
     </div>
+    <form asp-action="AddQuestion">
+        <input type="hidden" asp-for="QuizId"/>
+        <button>Add Question</button>
+    </form>
 }
 
 <div>

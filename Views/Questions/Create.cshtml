@@ -5,27 +5,72 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Create</h1>
+<h1>Add Question</h1>
 
-<h4>Question</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="QuizId" class="control-label"></label>
-                <select asp-for="QuizId" class ="form-control" asp-items="ViewBag.QuizId"></select>
-            </div>
-            <div class="form-group">
                 <label asp-for="QuestionText" class="control-label"></label>
                 <input asp-for="QuestionText" class="form-control" />
+                <input type="hidden" asp-for="QuizId"/>
                 <span asp-validation-for="QuestionText" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Position" class="control-label"></label>
-                <input asp-for="Position" class="form-control" />
-                <span asp-validation-for="Position" class="text-danger"></span>
+            <table>
+                <tr>
+                    <th class="col-1"></th>
+                    <th style="min-width: 80%" class="col-6">@Html.Label("AnswerOptions")</th>
+                    <th class="col-1">@Html.Label("Correct")</th>
+                </tr>
+                @{
+                    var answerIndex = 'A';
+                    for (int i = 0; i < 3; i++)
+                    {
+                        <tr style="padding-bottom: 5px">
+                            <td class="col-1" align="right">@answerIndex</td>
+                            <td class="col-6 answerOption">
+                                <input type="hidden" asp-for="AnswerOptions[i].QuestionId" />
+                                <input type="hidden" asp-for="AnswerOptions[i].AnswerOptionId" />
+                                <input asp-for="AnswerOptions[i].AnswerText" class="form-control" />
+                                <input type="hidden" asp-for="Position" value="@i"/>
+                                <span asp-validation-for="AnswerOptions[i].AnswerText" class="text-danger"></span>
+                            </td>
+                            <td class="col-1 correct" align="center">
+                                <input type="checkbox" asp-for="AnswerOptions[i].Correct">
+                            </td>
+                        </tr>
+                        answerIndex++;
+                    }
+                }
+            </table>
+            <div class="row">
+                <div class="col-1"></div>
+                <div class="col-6">
+                    @Html.ValidationMessage("AnswerOptionsError", new { style = "color:red;" })
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-1"></div>
+                <div class="col-6">
+                    @Html.ValidationMessage("MustHaveCorrectAnswer", new { style = "color:red;" })
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-1"></div>
+                <div class="col-6">
+                    @Html.ValidationMessage("BlankAnswerError", new { style = "color:red;" })
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-1"></div>
+                <div class="col-6">
+                    @Html.ValidationMessage("DuplicateAnswerError", new { style = "color:red;" })
+                </div>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -33,11 +78,11 @@
         </form>
     </div>
 </div>
-
+</table>
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Details" asp-controller="Quizzes" asp-route-id="@TempData["QuizId"]">Cancel</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }
