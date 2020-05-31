@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Threading.Tasks;
-using NUnit.Framework.Constraints;
 
 namespace QuizManager.Models
 {
     public class AnswerOptionValidationAttributes
     {
-
         public class CorrectNumberOfAnswerOptionsAttribute : ValidationAttribute
         {
             private int _minNumber;
@@ -20,14 +16,18 @@ namespace QuizManager.Models
                 _minNumber = minNumber;
                 _maxNumber = maxNumber;
             }
+
             public override bool IsValid(object value)
             {
                 var answers = value as List<AnswerOption>;
 
-                return answers.Count >= 3 && answers.Count <= 5;
-            }
+                if (answers == null)
+                {
+                    return false;
+                }
 
-            
+                return answers != null && answers.Count >= 3 && answers.Count <= 5;
+            }
         }
 
         public class NoDuplicatesAttribute : ValidationAttribute
@@ -35,27 +35,46 @@ namespace QuizManager.Models
             public override bool IsValid(object value)
             {
                 var answers = value as List<AnswerOption>;
+
+                if (answers == null)
+                {
+                    return false;
+                }
+
                 return !answers
                     .Where(ans => ans.AnswerText != null)
                     .GroupBy(ans => ans.AnswerText)
                     .Any(group => group.Count() > 1);
             }
-        } 
-        
+        }
+
         public class OneCorrectAnswerAttribute : ValidationAttribute
         {
             public override bool IsValid(object value)
             {
                 var answers = value as List<AnswerOption>;
+
+                if (answers == null)
+                {
+                    return false;
+                }
+
                 return answers.Count(ans => ans.Correct) == 1;
             }
         }
+
         public class NoBlankAnswersAttribute : ValidationAttribute
         {
             public override bool IsValid(object value)
             {
                 var answers = value as List<AnswerOption>;
-                return !answers.Any(ans => ans.AnswerText == null);
+
+                if (answers == null)
+                {
+                    return false;
+                }
+
+                return answers.All(ans => ans.AnswerText != null);
             }
         }
     }

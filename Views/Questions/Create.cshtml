@@ -15,63 +15,39 @@
             <div class="form-group">
                 <label asp-for="QuestionText" class="control-label"></label>
                 <input asp-for="QuestionText" class="form-control" />
-                <input type="hidden" asp-for="QuizId"/>
+                <input type="hidden" asp-for="QuizId" value="@TempData.Peek("QuizId")"/>
                 <span asp-validation-for="QuestionText" class="text-danger"></span>
             </div>
-            <table asp-validation-for="AnswerOptions">
-                <tr>
-                    <th class="col-1"></th>
-                    <th style="min-width: 80%" class="col-6">@Html.Label("AnswerOptions")</th>
-                    <th class="col-1">@Html.Label("Correct")</th>
-                </tr>
+
+            <div>
+                <div class="row">
+                    <div class="col-1"></div>
+                    <div class="col-6">@Html.Label("AnswerOptions")</div>
+                    <div class="col-1">@Html.Label("Correct")</div>
+                </div>
                 @{
                     var answerIndex = 'A';
                     for (int i = 0; i < 3; i++)
                     {
-                        <tr style="padding-bottom: 5px">
-                            <td class="col-1" align="right">@answerIndex</td>
-                            <td class="col-6 answerOption">
-                                <input type="hidden" asp-for="AnswerOptions[i].QuestionId" />
-                                <input type="hidden" asp-for="AnswerOptions[i].AnswerOptionId" />
-                                <input asp-for="AnswerOptions[i].AnswerText" class="form-control" />
-                                <input type="hidden" asp-for="Position" value="@i"/>
-                                <span asp-validation-for="AnswerOptions[i].AnswerText" class="text-danger"></span>
-                            </td>
-                            <td class="col-1 correct" align="center">
+                        <div class="row" style="padding-bottom: 5px">
+                            <div class="col-1" align="right">@answerIndex</div>
+                            <div class="col-6 answerOption">
+                                <input asp-for="AnswerOptions[i].AnswerText" class="form-control"/>
+                            </div>
+                            <div class="col-1 correct" align="center">
                                 <input type="checkbox" asp-for="AnswerOptions[i].Correct">
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                         answerIndex++;
                     }
                 }
-            </table>
+            </div>
             <div class="row">
                 <div class="col-1"></div>
-                <div class="col-6">
-                    @Html.ValidationMessage("AnswerOptionsError", new { style = "color:red;" })
+                <div class="col-6 text-danger"><span asp-validation-for="AnswerOptions"></span>
                 </div>
             </div>
-
-            <div class="row">
-                <div class="col-1"></div>
-                <div class="col-6">
-                    @Html.ValidationMessage("MustHaveCorrectAnswer", new { style = "color:red;" })
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-1"></div>
-                <div class="col-6">
-                    @Html.ValidationMessage("BlankAnswerError", new { style = "color:red;" })
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-1"></div>
-                <div class="col-6">
-                    @Html.ValidationMessage("DuplicateAnswerError", new { style = "color:red;" })
-                </div>
-            </div>
+            <hr/>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -80,9 +56,16 @@
 </div>
 </table>
 <div>
-    <a asp-action="Details" asp-controller="Quizzes" asp-route-id="@TempData["QuizId"]">Cancel</a>
+    <a asp-action="Details" asp-controller="Quizzes" asp-route-id="@TempData.Peek("QuizId")">Cancel</a>
 </div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    <script>
+        $(document).ready(function() {
+            $('input:checkbox').click(function() {
+                $('input:checkbox').not(this).prop('checked', false);
+            });
+        });
+    </script>
 }

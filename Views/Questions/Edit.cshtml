@@ -46,7 +46,9 @@
                     <div class="col-1">
                         <a href="@Url.Action("DeleteAnswerOption",
                                      "Questions",
-                                     new { answerId = answer.AnswerOptionId, questionId = @Model.QuestionId})">delete</a>
+                                     new {answerId = answer.AnswerOptionId, questionId = Model.QuestionId})">
+                            delete
+                        </a>
                     </div>
                 </div>
                 answerCounter += 1;
@@ -55,8 +57,9 @@
         }
         <div class="row">
             <div class="col-1"></div>
-                <div class="col-6 text-danger"><span asp-validation-for="AnswerOptions"></span>
-                </div>
+            <div class="col-6 text-danger">
+                <span asp-validation-for="AnswerOptions"></span>
+            </div>
         </div>
 
         <div class="row">
@@ -65,17 +68,20 @@
                 @Html.ValidationMessage("AnswerOptionsError")
             </div>
         </div>
+
         <hr/>
+
         <div class="form-group">
             <input type="submit" value="Save" class="btn btn-primary"/>
         </div>
     </form>
+
     <div class="row" style="padding-bottom: 5px">
         <div class="col-1"></div>
         <div class="col-6">
-            <button class="btn btn-success" onclick="location.href = '@Url.Action("AddAnswerOption", "Questions", new { id = @Model.QuestionId})';">Add Answer Option</button>
+            <button class="btn btn-success" onclick="location.href = '@Url.Action("AddAnswerOption", "Questions", new {id = Model.QuestionId})';">Add Answer Option</button>
         </div>
-    </div> 
+    </div>
 </div>
 
 

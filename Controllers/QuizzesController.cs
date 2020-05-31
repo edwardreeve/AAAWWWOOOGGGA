@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.EntityFrameworkCore;
 using QuizManager.Data;
 using QuizManager.Models;
@@ -164,6 +165,15 @@ namespace QuizManager.Controllers
             _context.Quiz.Remove(quiz);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        [Authorize(Roles = "Edit")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddQuestion(int quizId)
+        {
+            TempData["QuizId"] = quizId;
+            return RedirectToAction("Create", "Questions");
         }
 
         private bool QuizExists(int id)

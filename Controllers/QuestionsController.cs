@@ -55,7 +55,7 @@ namespace QuizManager.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("QuestionId,QuizId,QuestionText,Position")] Question question)
+        public async Task<IActionResult> Create([Bind("QuestionId,QuizId,QuestionText,Position,AnswerOptions")] Question question)
         {
             if (!ModelState.IsValid)
             {
@@ -64,6 +64,7 @@ namespace QuizManager.Controllers
 
             _context.Add(question);
             await _context.SaveChangesAsync();
+            TempData.Clear();
             return RedirectToAction("Details", "Quizzes", new { id = question.QuizId });
         }
 
@@ -224,7 +225,6 @@ namespace QuizManager.Controllers
             Edit action checks for temp data and adds validation errors if populated */
             if (selectedQuestion.AnswerOptions.Count <= 3)
             {
-                TempData["CannotDeleteAnswers"] = true;
                 TempData["CannotDeleteAnswers"] = true;
                 TempData.Save();
                 return RedirectToAction("Edit", new { id = questionId });
