@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace QuizManager.Models
 {
     public class AnswerOptionValidationAttributes
     {
+
         public class CorrectNumberOfAnswerOptionsAttribute : ValidationAttribute
         {
             private int _minNumber;
@@ -17,7 +17,6 @@ namespace QuizManager.Models
                 _minNumber = minNumber;
                 _maxNumber = maxNumber;
             }
-
             public override bool IsValid(object value)
             {
                 var answers = value as List<AnswerOption>;
@@ -26,8 +25,7 @@ namespace QuizManager.Models
                 {
                     return false;
                 }
-
-                return answers != null && answers.Count >= 3 && answers.Count <= 5;
+                return answers.Count >= 3 && answers.Count <= 5;
             }
         }
 
@@ -63,7 +61,6 @@ namespace QuizManager.Models
                 return answers.Count(ans => ans.Correct) == 1;
             }
         }
-
         public class CorrectAnswerCantBeBlank : ValidationAttribute
         {
             public override bool IsValid(object value)
@@ -81,7 +78,8 @@ namespace QuizManager.Models
         }
 
         public class AtLeastThreeAnswersWithText : ValidationAttribute
-        {public override bool IsValid(object value)
+        {
+            public override bool IsValid(object value)
             {
                 var answers = value as List<AnswerOption>;
 
@@ -89,10 +87,9 @@ namespace QuizManager.Models
                 {
                     return false;
                 }
-                
+
                 var textAnswers = answers.Where(ans => ans.AnswerText != null).ToList();
                 return textAnswers.Count >= 3;
-
             }
         }
     }

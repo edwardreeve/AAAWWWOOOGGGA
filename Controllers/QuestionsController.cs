@@ -69,7 +69,7 @@ namespace QuizManager.Controllers
             for (var i = answerOptions.Count - 1; i >= 0; i--)
             {
                 var answerOption = answerOptions[i];
-               
+
                 if (answerOption.Correct == false && answerOption.AnswerText == null)
                 {
                     answerOptions.RemoveAt(i);
@@ -77,9 +77,9 @@ namespace QuizManager.Controllers
             }
 
             _context.Add(question);
-            await _context.SaveChangesAsync();
-            TempData.Clear();
-            return RedirectToAction("Details", "Quizzes", new { id = question.QuizId });
+                await _context.SaveChangesAsync();
+                TempData.Clear();
+            return RedirectToAction("Details", "Quizzes", new {id = question.QuizId});
         }
 
         // GET: Questions/Edit/5
@@ -91,7 +91,7 @@ namespace QuizManager.Controllers
             }
 
             /*If this action has been reached via the 'AddAnswerOption' method, it will let us know 
-           using TempData if that action would have resulted in too many answers*/
+            using TempData if that action would have resulted in too many answers*/
             if (TempData.Count > 0)
             {
                 if (TempData["CannotAddAnswers"] != null)
@@ -222,7 +222,7 @@ namespace QuizManager.Controllers
             var selectedQuestion = questions.FirstOrDefault();
 
             /*Check if it already has the max number of answers, add error to TempData if so.
-            Edit action checks for temp data and adds validation errors if populated*/  
+            Edit action checks for temp data and adds validation errors if populated*/
             if (selectedQuestion.AnswerOptions.Count >= 5)
             {
                 TempData["CannotAddAnswers"] = true;
@@ -243,7 +243,7 @@ namespace QuizManager.Controllers
             await _context.SaveChangesAsync();
 
             //Reload the edit question view
-            return RedirectToAction("Edit", new {id = id});
+            return RedirectToAction("Edit", new { id = id });
         }
 
         public async Task<IActionResult> DeleteAnswerOption(int answerId, int questionId)
@@ -256,8 +256,8 @@ namespace QuizManager.Controllers
 
             var selectedQuestion = questions.FirstOrDefault();
 
-            /*Check if it already has the min number of questions, add error to TempData if so.
-            Edit action checks for temp data and adds validation errors if populated */
+            /*Check if it already has the max number of answers, add error to TempData if so.
+            Edit action checks for temp data and adds validation errors if populated*/
             if (selectedQuestion.AnswerOptions.Count <= 3)
             {
                 TempData["CannotDeleteAnswers"] = true;
@@ -266,7 +266,7 @@ namespace QuizManager.Controllers
             }
 
             //Redirect for confirmation of delete
-            return RedirectToAction("Delete", "AnswerOptions", new {id = answerId});
+            return RedirectToAction("Delete", "AnswerOptions", new { id = answerId });
         }
 
         private bool QuestionExists(int id)

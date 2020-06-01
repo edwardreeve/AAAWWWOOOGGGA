@@ -17,30 +17,30 @@
 </div>
 }
 <table class="table">
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    <div class="card">
-                        <div class="card-header">
-                            <h2 class="mb-0">
-                                <button class="btn btn-link btn-block text-left" type="button" onclick="@("window.location.href='" + @Url.Action("Details", "Quizzes", new { id = @item.QuizId }) + "'");">
-                                    @item.Name
-                                </button>
-                            </h2>
-                        </div>
-                    </div>
-                </td>
-                <td>
-                    @if (User.IsInRole("Edit"))
-                    {
-                        <a asp-action="Edit" asp-route-id="@item.QuizId">Edit</a>
-                        <a asp-action="Delete" asp-route-id="@item.QuizId">Delete</a>
-                    }
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2 class="mb-0">
+                                        <button class="btn btn-link btn-block text-left" type="button" onclick="@("window.location.href='" + @Url.Action("Details", "Quizzes", new { id = @item.QuizId }) + "'");">
+                                            @item.Name
+                                        </button>
+                                    </h2>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            @if (User.IsInRole("Edit"))
+                            {
+                                <a asp-action="Edit" asp-route-id="@item.QuizId">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@item.QuizId">Delete</a>
+                            }
 
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>

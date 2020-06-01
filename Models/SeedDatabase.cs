@@ -41,7 +41,8 @@ namespace QuizManager.Models
         private static List<Quiz> SeedDatabaseQuizzes(ApplicationDbContext context)
         {
             //This resets the ID auto-incrementing ID column to 0, to keep the quiz/question/answers synced up
-            context.Database.ExecuteSqlRaw("DBCC CHECKIDENT('Quiz', RESEED, 0)");
+            //context.Database.ExecuteSqlRaw("delete from Quiz if exists;" +    
+            //                               "delete from sqlite_sequence where name = 'Quiz'; ");
             var quizzes = new List<Quiz>();
 
             for (var index = 1; index <= NumberOfQuizzes; index++)
@@ -61,7 +62,8 @@ namespace QuizManager.Models
 
         private static List<Question> SeedDatabaseQuestions(ApplicationDbContext context, List<Quiz> quizzes)
         {
-            context.Database.ExecuteSqlRaw("DBCC CHECKIDENT('Question', RESEED, 0)");
+            //context.Database.ExecuteSqlRaw("delete from Question;" +
+            //                               "delete from sqlite_sequence where name = 'Question'; ");
             var questions = new List<Question>();
 
             var questionIdCounter = 1;
@@ -91,7 +93,8 @@ namespace QuizManager.Models
 
         private static void SeedDatabaseAnswers(ApplicationDbContext context, List<Question> questions)
         {
-            context.Database.ExecuteSqlRaw("DBCC CHECKIDENT('AnswerOption', RESEED, 0)");
+            //context.Database.ExecuteSqlRaw("delete from AnswerOption;" +
+            //                               "delete from sqlite_sequence where name = 'AnswerOption'; ");
             var answerOptions = new List<AnswerOption>();
 
             var answerOptionIdCounter = 1;

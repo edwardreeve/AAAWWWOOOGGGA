@@ -13,7 +13,6 @@ namespace QuizManager.Models
         public int QuestionId { get; set; }
         [Display(Name = "Answer Text")]
         public string AnswerText { get; set; }
-      
         public bool Correct { get; set; }
     }
 }

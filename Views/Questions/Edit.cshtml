@@ -8,14 +8,14 @@
 <div class="container-fluid">
     <form asp-action="Edit">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <input type="hidden" asp-for="QuestionId"/>
-        <input type="hidden" asp-for="QuizId"/>
-        <input type="hidden" asp-for="Position"/>
+        <input type="hidden" asp-for="QuestionId" />
+        <input type="hidden" asp-for="QuizId" />
+        <input type="hidden" asp-for="Position" />
 
         <div class="row">
             <div class="col-md form-group">
                 <label style="font-weight: bold" asp-for="QuestionText" class="control-label"></label>
-                <input asp-for="QuestionText" class="form-control"/>
+                <input asp-for="QuestionText" class="form-control" />
                 <span asp-validation-for="QuestionText" class="text-danger"></span>
             </div>
         </div>
@@ -34,8 +34,8 @@
                 <div class="row" style="padding-bottom: 5px">
                     <div class="col-1" align="right">@answerIndex</div>
                     <div class="col-6">
-                        <input type="hidden" asp-for="AnswerOptions[answerCounter].AnswerOptionId"/>
-                        <input asp-for="AnswerOptions[answerCounter].AnswerText" class="form-control"/>
+                        <input type="hidden" asp-for="AnswerOptions[answerCounter].AnswerOptionId" />
+                        <input asp-for="AnswerOptions[answerCounter].AnswerText" class="form-control" />
                     </div>
                     <div class="col-1" align="center">
                         <input type="checkbox" asp-for="AnswerOptions[answerCounter].Correct">
@@ -52,6 +52,7 @@
                 answerIndex++;
             }
         }
+
         <div class="row">
             <div class="col-1"></div>
             <div class="col-6 text-danger">
@@ -66,21 +67,20 @@
             </div>
         </div>
 
-        <hr/>
+        <hr />
 
         <div class="form-group">
-            <input type="submit" value="Save" class="btn btn-primary"/>
+            <input type="submit" value="Save" class="btn btn-primary" />
         </div>
     </form>
 
-    <div class="row" style="padding-bottom: 5px">
-        <div class="col-1"></div>
-        <div class="col-6">
-            <button class="btn btn-success" onclick="location.href = '@Url.Action("AddAnswerOption", "Questions", new {id = Model.QuestionId})';">Add Answer Option</button>
-        </div>
+<div class="row" style="padding-bottom: 5px">
+    <div class="col-1"></div>
+    <div class="col-6">
+        <button class="btn btn-success" onclick="location.href = '@Url.Action("AddAnswerOption", "Questions", new {id = Model.QuestionId})';">Add Answer Option</button>
     </div>
+    </div> 
 </div>
-
 
 <div>
     <a asp-action="Details" asp-controller="Quizzes" asp-route-id="@Model.QuizId">Back to Quiz</a>

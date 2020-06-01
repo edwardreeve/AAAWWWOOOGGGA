@@ -114,11 +114,12 @@ namespace QuizManager.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction("Edit", "Questions", new { id = answerOption.QuestionId});
+                return RedirectToAction("Edit", "Questions", new { id = answerOption.QuestionId });
             }
             return View(answerOption);
         }
 
+        // GET: AnswerOptions/Delete/5
         [Authorize(Roles = "Edit")]
         public async Task<IActionResult> Delete(int? id)
         {
@@ -145,13 +146,14 @@ namespace QuizManager.Controllers
         {
             var answerOption = await _context.AnswerOption.FindAsync(id);
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.AnswerOption.Remove(answerOption);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Edit", "Questions", new { id = answerOption.QuestionId });
+                return View(answerOption);
             }
-            return View(answerOption);
+
+            _context.AnswerOption.Remove(answerOption);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Edit", "Questions", new { id = answerOption.QuestionId });
         }
 
         private bool AnswerOptionExists(int id)
