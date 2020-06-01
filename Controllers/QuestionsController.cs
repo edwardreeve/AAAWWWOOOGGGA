@@ -62,6 +62,20 @@ namespace QuizManager.Controllers
                 return View(question);
             }
 
+            //Need to delete any blank questions. Work down the list, as otherwise the
+            //count of the answers drops lower than the iterating index following a deletion
+            var answerOptions = question.AnswerOptions;
+
+            for (var i = answerOptions.Count - 1; i >= 0; i--)
+            {
+                var answerOption = answerOptions[i];
+               
+                if (answerOption.Correct == false && answerOption.AnswerText == null)
+                {
+                    answerOptions.RemoveAt(i);
+                }
+            }
+
             _context.Add(question);
             await _context.SaveChangesAsync();
             TempData.Clear();
@@ -126,6 +140,27 @@ namespace QuizManager.Controllers
             if (!ModelState.IsValid)
             {
                 return View(question);
+            }
+
+            //Need to delete any blank questions. Work down the list, as otherwise the
+            //count of the answers drops lower than the iterating index following a deletion
+            var answerOptions = question.AnswerOptions;
+            var answersToDelete = new List<AnswerOption>();
+            for (var i = answerOptions.Count - 1; i >= 0; i--)
+            {
+                var answerOption = answerOptions[i];
+
+                if (answerOption.Correct == false && answerOption.AnswerText == null)
+                {
+                    answerOptions.RemoveAt(i);
+                    answersToDelete.Add(answerOption);
+                }
+            }
+
+            if (answersToDelete.Any())
+            {
+                _context.AnswerOption.RemoveRange(answersToDelete);
+                await _context.SaveChangesAsync();
             }
 
             try

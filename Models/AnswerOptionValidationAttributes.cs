@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace QuizManager.Models
 {
@@ -21,7 +22,7 @@ namespace QuizManager.Models
             {
                 var answers = value as List<AnswerOption>;
 
-                if (answers == null)
+                if (answers == null || answers.All(ans => ans.AnswerText == null))
                 {
                     return false;
                 }
@@ -36,7 +37,7 @@ namespace QuizManager.Models
             {
                 var answers = value as List<AnswerOption>;
 
-                if (answers == null)
+                if (answers == null || answers.All(ans => ans.AnswerText == null))
                 {
                     return false;
                 }
@@ -54,7 +55,7 @@ namespace QuizManager.Models
             {
                 var answers = value as List<AnswerOption>;
 
-                if (answers == null)
+                if (answers == null || answers.All(ans => ans.AnswerText == null))
                 {
                     return false;
                 }
@@ -63,18 +64,35 @@ namespace QuizManager.Models
             }
         }
 
-        public class NoBlankAnswersAttribute : ValidationAttribute
+        public class CorrectAnswerCantBeBlank : ValidationAttribute
         {
             public override bool IsValid(object value)
             {
                 var answers = value as List<AnswerOption>;
 
-                if (answers == null)
+                if (answers == null || answers.All(ans => ans.AnswerText == null))
                 {
                     return false;
                 }
 
-                return answers.All(ans => ans.AnswerText != null);
+                var correctAnswer = answers.FirstOrDefault(ans => ans.Correct);
+                return correctAnswer?.AnswerText != null;
+            }
+        }
+
+        public class AtLeastThreeAnswersWithText : ValidationAttribute
+        {public override bool IsValid(object value)
+            {
+                var answers = value as List<AnswerOption>;
+
+                if (answers == null || answers.All(ans => ans.AnswerText == null))
+                {
+                    return false;
+                }
+                
+                var textAnswers = answers.Where(ans => ans.AnswerText != null).ToList();
+                return textAnswers.Count >= 3;
+
             }
         }
     }

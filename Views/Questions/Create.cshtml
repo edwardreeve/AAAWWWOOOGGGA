@@ -3,15 +3,19 @@
 @{
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
 }
 
 <h1>Add Question</h1>
 <hr />
+@*TODO put this script in the head if it works*@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
 <div class="container-fluid">
     <form asp-action="Create">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <input type="hidden" asp-for="QuizId" value="@TempData.Peek("QuizId")" />
-        
+
         <div class="row">
             <div class="form-group col-md">
                 <label asp-for="QuestionText" class="control-label"></label>
@@ -19,7 +23,7 @@
                 <span asp-validation-for="QuestionText" class="text-danger"></span>
             </div>
         </div>
-        
+
         <div class="row">
             <div class="col-1"></div>
             <div class="col-6">@Html.Label("AnswerOptions")</div>
@@ -28,20 +32,22 @@
         @{
             var answerIndex = 'A';
 
-            for (var i = 0; i < 3; i++)
-            {
-                <div class="row" style="padding-bottom: 5px">
-                    <div class="col-1" align="right">@answerIndex</div>
-                    <div class="col-6">
-                        <input asp-for="AnswerOptions[i].AnswerText" class="form-control" />
+                for (var i = 0; i < 5; i++)
+                {
+                    <div class="row" style="padding-bottom: 5px">
+                        <div class="col-1" align="right">@answerIndex</div>
+                        <div class="col-6">
+                            <input asp-for="AnswerOptions[i].AnswerText" class="form-control" />
+                        </div>
+                        <div class="col-1" align="center">
+                            <input type="checkbox" asp-for="AnswerOptions[i].Correct">
+                        </div>
                     </div>
-                    <div class="col-1" align="center">
-                        <input type="checkbox" asp-for="AnswerOptions[i].Correct">
-                    </div>
-                </div>
-                answerIndex++;
+                    answerIndex++;
+                }
             }
-        }
+            <div id="answerOption-3"></div>
+            <div id="answerOption-4"></div>
         <div class="row">
             <div class="col-1"></div>
             <div class="col-6 text-danger">
@@ -54,17 +60,18 @@
         </div>
     </form>
 </div>
-    <div>
-        <a asp-action="Details" asp-controller="Quizzes" asp-route-id="@TempData.Peek("QuizId")">Cancel</a>
-    </div>
+<div>
+    <a asp-action="Details" asp-controller="Quizzes" asp-route-id="@TempData.Peek("QuizId")">Cancel</a>
+</div>
 
-    @section Scripts {
-        @{await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
-        <script>
-            $(document).ready(function () {
-                $('input:checkbox').click(function () {
-                    $('input:checkbox').not(this).prop('checked', false);
-                });
+@section Scripts {
+
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    <script>
+        $(document).ready(function() {
+            $('input:checkbox').click(function() {
+                $('input:checkbox').not(this).prop('checked', false);
             });
-        </script>
-    }
+        });
+    </script>
+}
