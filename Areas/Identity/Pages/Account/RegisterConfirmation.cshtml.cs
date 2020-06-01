@@ -10,7 +10,8 @@ using QuizManager.Models;
 
 namespace QuizManager.Areas.Identity.Pages.Account
 {
-    [AllowAnonymous]
+    
+    [Authorize]
     public class RegisterConfirmationModel : PageModel
     {
         private readonly UserManager<QuizManagerUser> _userManager;

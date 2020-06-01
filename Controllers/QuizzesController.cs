@@ -165,8 +165,15 @@ namespace QuizManager.Controllers
         [Authorize(Roles = "Edit")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult AddQuestion(int quizId)
+        public async Task<IActionResult> AddQuestion(int quizId)
         {
+            var quizzes = await _context.Quiz
+                .Where(quiz => quiz.QuizId == quizId)
+                .Include((quiz => quiz.Questions))
+                .ToListAsync();
+
+            var selectedQuiz = quizzes.FirstOrDefault();
+            TempData["Position"] = selectedQuiz.Questions.Count;
             TempData["QuizId"] = quizId;
             return RedirectToAction("Create", "Questions");
         }

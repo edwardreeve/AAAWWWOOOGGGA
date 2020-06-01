@@ -6,9 +6,13 @@ To run;
 
 Download this zip file. Extract it somewhere you can find easily, such as your desktop.
 
-The application was built using .NET Core, and as such should work on Mac OS, Windows and Linux. It requires the .NET Core 3.1 runtime, which you can download here if you don't already have it installed;
+The application was built using .NET Core, and as such should work on Mac OS, Windows and Linux. It requires the .NET Core 3.1 SDK, which you can download here if you don't already have it installed;
 
 [Download .NET Core 3.1](https://dotnet.microsoft.com/download/dotnet-core/3.1)
+
+It will create a local SQLite database file, and try to save it to the root of the `c:\` drive - if you are running this on a non-Windows machine, or would like to create this database file somewhere else, you can edit the `appsettings.json` file to specify a different location for the local database;
+
+![connectionString](https://github.com/makersacademy/Edward-Reeve-SP/blob/master/WikiImages/ReadMeimg.png)
 
 1. Open a command prompt in the unzipped folder. 
 
