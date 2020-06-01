@@ -8,8 +8,6 @@
 
 <h1>Add Question</h1>
 <hr />
-@*TODO put this script in the head if it works*@
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 <div class="container-fluid">
     <form asp-action="Create">
@@ -18,7 +16,7 @@
 
         <div class="row">
             <div class="form-group col-md">
-                <label asp-for="QuestionText" class="control-label"></label>
+                <label style="font-weight: bold" asp-for="QuestionText" class="control-label"></label>
                 <input asp-for="QuestionText" class="form-control" />
                 <span asp-validation-for="QuestionText" class="text-danger"></span>
             </div>
@@ -26,8 +24,8 @@
 
         <div class="row">
             <div class="col-1"></div>
-            <div class="col-6">@Html.Label("AnswerOptions")</div>
-            <div class="col-1">@Html.Label("Correct")</div>
+            <div style="font-weight: bold" class="col-6">@Html.Label("AnswerOptions")</div>
+            <div style="font-weight: bold" class="col-1">@Html.Label("Correct")</div>
         </div>
         @{
             var answerIndex = 'A';

@@ -14,7 +14,7 @@
 
         <div class="row">
             <div class="col-md form-group">
-                <label asp-for="QuestionText" class="control-label"></label>
+                <label style="font-weight: bold" asp-for="QuestionText" class="control-label"></label>
                 <input asp-for="QuestionText" class="form-control"/>
                 <span asp-validation-for="QuestionText" class="text-danger"></span>
             </div>
@@ -22,8 +22,8 @@
 
         <div class="row">
             <div class="col-1"></div>
-            <label class="col-6" asp-for="AnswerOptions"></label>
-            <label class="col-1">Correct?</label>
+            <label style="font-weight: bold" class="col-6" asp-for="AnswerOptions"></label>
+            <label style="font-weight: bold" class="col-1">Correct?</label>
         </div>
         @{
             var answerCounter = 0;
