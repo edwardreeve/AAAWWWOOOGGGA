@@ -4,6 +4,14 @@
     ViewData["Title"] = "Edit";
 }
 <h4>Edit Question</h4>
+<div class="row" style="padding-bottom: 5px">
+    <div>
+        <button class="btn-sm btn-success" style="margin: 10px;border:none" onclick="location.href = '@Url.Action("AddAnswerOption", "Questions", new {id = Model.QuestionId})';">Add Answer Option</button>
+    </div>
+    <div>
+        <button class="btn-sm btn-danger" style="margin: 10px;border:none" onclick="location.href = '@Url.Action("Delete", "Questions", new {id = Model.QuestionId})';">Delete Question</button>
+    </div>
+</div>
 <hr/>
 <div class="container-fluid">
     <form asp-action="Edit">
@@ -73,17 +81,8 @@
             <input type="submit" value="Save" class="btn btn-primary" />
         </div>
     </form>
-
-<div class="row" style="padding-bottom: 5px">
-    <div class="col-1"></div>
-    <div class="col-6">
-        <button class="btn btn-success" onclick="location.href = '@Url.Action("AddAnswerOption", "Questions", new {id = Model.QuestionId})';">Add Answer Option</button>
-    </div>
-    </div> 
-</div>
-
 <div>
-    <a asp-action="Details" asp-controller="Quizzes" asp-route-id="@Model.QuizId">Back to Quiz</a>
+    <a class="btn btn-light" asp-action="Details" asp-controller="Quizzes" asp-route-id="@Model.QuizId">Back to Quiz</a>
 </div>
 
 @section Scripts {

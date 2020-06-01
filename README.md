@@ -30,6 +30,14 @@ http://localhost:5000
 
 You may see warnings about trying to visit an unsafe site - these can be ignored using your browser's in-built options.
 
+The application is configured with three test accounts, with varying levels of permissions. Their login details are as follows;
+
+- Username = 'Edit'
+- Username = 'View'
+- Username = 'Restricted'
+
+All three users have the same password, 'P@ssword1'.
+
 3. To close the application, terminate the running process in your command window by pressing `Ctrl+C`
 
 4. To run the program again during the same session, you'll only need to enter the following command;     

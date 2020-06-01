@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
 using QuizManager.Data;
 using QuizManager.Models;
@@ -20,30 +17,7 @@ namespace QuizManager.Controllers
         {
             _context = context;
         }
-
-        //Making private as not needed yet in current app implementation
-        private async Task<IActionResult> Index()
-        {
-            return View(await _context.Question.ToListAsync());
-        }
         
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var question = await _context.Question
-                .FirstOrDefaultAsync(m => m.QuestionId == id);
-            if (question == null)
-            {
-                return NotFound();
-            }
-
-            return View(question);
-        }
-
         // GET: Questions/Create
         public IActionResult Create()
         {
@@ -55,6 +29,7 @@ namespace QuizManager.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Edit")]
         public async Task<IActionResult> Create([Bind("QuestionId,QuizId,QuestionText,Position,AnswerOptions")] Question question)
         {
             if (!ModelState.IsValid)
@@ -83,6 +58,7 @@ namespace QuizManager.Controllers
         }
 
         // GET: Questions/Edit/5
+        [Authorize(Roles = "Edit")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -125,6 +101,7 @@ namespace QuizManager.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Edit")]
         public async Task<IActionResult> Edit(int id, [Bind("QuestionId," +
                                                             "QuizId," +
                                                             "QuestionText," +
@@ -182,7 +159,7 @@ namespace QuizManager.Controllers
             return RedirectToAction("Details", "Quizzes", new { id = question.QuizId});
         }
 
-        // GET: Questions/Delete/5
+        [Authorize(Roles = "Edit")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -203,6 +180,7 @@ namespace QuizManager.Controllers
         // POST: Questions/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Edit")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var question = await _context.Question.FindAsync(id);
@@ -211,6 +189,7 @@ namespace QuizManager.Controllers
             return RedirectToAction("Details", "Quizzes", new { id = question.QuizId });
         }
 
+        [Authorize(Roles = "Edit")]
         public async Task<IActionResult> AddAnswerOption(int id)
         {
             //Retrieve Question
@@ -246,6 +225,7 @@ namespace QuizManager.Controllers
             return RedirectToAction("Edit", new { id = id });
         }
 
+        [Authorize(Roles = "Edit")]
         public async Task<IActionResult> DeleteAnswerOption(int answerId, int questionId)
         {
             //Retrieve Question

@@ -5,17 +5,16 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>
-    Quiz Database
-</h1>
-@if (User.IsInRole("Edit"))
-{
-<div style="padding-bottom:5px">
-    <button class="btn btn-primary btn-lg" type="button" onclick="@("window.location.href='" + @Url.Action("Create", "Quizzes") + "'");">
-        Create New
-    </button>
-</div>
-}
+        <h1>
+            Quiz Database
+        </h1>
+        @if (User.IsInRole("Edit"))
+        {
+            <button class="btn-sm btn-success" style="border: none; margin:10px"  type="button" onclick="@("window.location.href='" + @Url.Action("Create", "Quizzes") + "'");">
+                    Create New
+            </button>
+        }
+
 <table class="table">
             <tbody>
                 @foreach (var item in Model)
