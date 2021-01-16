@@ -8,6 +8,7 @@ namespace QuizManager.Models
 {
     public class AnswerOption
     {
+        //Just a test comment for git purposes
         public int AnswerOptionId { get; set; }
         [Required]
         public int QuestionId { get; set; }
